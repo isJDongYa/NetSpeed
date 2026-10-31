@@ -2,11 +2,12 @@
 set -euo pipefail
 
 project_dir="$(cd "$(dirname "$0")/.." && pwd)"
+app_version="$(tr -d '[:space:]' < "$project_dir/VERSION")"
 target_arch="${1:-$(uname -m)}"
 case "$target_arch" in
-    arm64|x86_64) ;;
+    arm64|x86_64|universal) ;;
     *)
-        printf 'Usage: zsh scripts/build.sh [arm64|x86_64]\n' >&2
+        printf 'Usage: zsh scripts/build.sh [arm64|x86_64|universal]\n' >&2
         exit 2
         ;;
 esac
@@ -15,12 +16,25 @@ mkdir -p "$app_dir/Contents/MacOS" "$app_dir/Contents/Resources" "$project_dir/b
 
 xcrun swift "$project_dir/scripts/make-icon.swift" "$project_dir/build"
 iconutil -c icns "$project_dir/build/NetSpeed.iconset" -o "$app_dir/Contents/Resources/AppIcon.icns"
-xcrun swiftc -O -whole-module-optimization -target "$target_arch-apple-macos13.0" \
-    "$project_dir/Sources/NetworkMonitor.swift" "$project_dir/Sources/App.swift" "$project_dir/Sources/main.swift" \
-    -framework AppKit -framework SystemConfiguration -framework ServiceManagement \
-    -o "$app_dir/Contents/MacOS/NetSpeed"
+compile_arch() {
+    local build_arch="$1"
+    local binary_path="$2"
+    xcrun swiftc -O -whole-module-optimization -target "$build_arch-apple-macos13.0" \
+        "$project_dir/Sources/NetworkMonitor.swift" "$project_dir/Sources/App.swift" "$project_dir/Sources/main.swift" \
+        -framework AppKit -framework SystemConfiguration -framework ServiceManagement \
+        -o "$binary_path"
+}
 
-cat > "$app_dir/Contents/Info.plist" <<'PLIST'
+if [[ "$target_arch" == universal ]]; then
+    compile_arch arm64 "$project_dir/build/NetSpeed-arm64"
+    compile_arch x86_64 "$project_dir/build/NetSpeed-x86_64"
+    xcrun lipo -create "$project_dir/build/NetSpeed-arm64" "$project_dir/build/NetSpeed-x86_64" \
+        -output "$app_dir/Contents/MacOS/NetSpeed"
+else
+    compile_arch "$target_arch" "$app_dir/Contents/MacOS/NetSpeed"
+fi
+
+cat > "$app_dir/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
@@ -29,7 +43,7 @@ cat > "$app_dir/Contents/Info.plist" <<'PLIST'
     <key>CFBundleName</key><string>NetSpeed</string>
     <key>CFBundleDisplayName</key><string>NetSpeed</string>
     <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleShortVersionString</key><string>1.0.0</string>
+    <key>CFBundleShortVersionString</key><string>$app_version</string>
     <key>CFBundleVersion</key><string>1</string>
     <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>LSMinimumSystemVersion</key><string>13.0</string>

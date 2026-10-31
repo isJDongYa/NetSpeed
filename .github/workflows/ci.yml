@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
@@ -26,6 +27,8 @@ jobs:
             arch: arm64
           - runner: macos-15-intel
             arch: x86_64
+          - runner: macos-15
+            arch: universal
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -40,6 +43,14 @@ jobs:
 
       - name: Check bundle signature
         run: codesign --verify --strict delivery/NetSpeed.app
+
+      - name: Verify universal architectures
+        if: matrix.arch == 'universal'
+        run: |
+          built_archs="$(xcrun lipo -archs delivery/NetSpeed.app/Contents/MacOS/NetSpeed)"
+          printf '%s\n' "$built_archs"
+          [[ " $built_archs " == *" arm64 "* ]]
+          [[ " $built_archs " == *" x86_64 "* ]]
 
       - name: Package development build
         run: ditto -c -k --sequesterRsrc --keepParent delivery/NetSpeed.app "build/NetSpeed-${{ matrix.arch }}.zip"

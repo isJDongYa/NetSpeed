@@ -11,10 +11,13 @@ A compact, native macOS utility for real-time download and upload speeds.
 **English** · [简体中文](README.zh-CN.md)
 
 [![CI](https://github.com/isJDongYa/NetSpeed/actions/workflows/ci.yml/badge.svg)](https://github.com/isJDongYa/NetSpeed/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/isJDongYa/NetSpeed?color=34c9a5)](https://github.com/isJDongYa/NetSpeed/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-34c9a5.svg)](LICENSE)
 [![macOS 13+](https://img.shields.io/badge/macOS-13%2B-24292f?logo=apple&logoColor=white)](#requirements)
 [![Swift 6](https://img.shields.io/badge/Swift-6-f05138?logo=swift&logoColor=white)](#build-from-source)
 [![AppKit](https://img.shields.io/badge/UI-AppKit-549ef7)](#features)
+
+**[Download for macOS](https://github.com/isJDongYa/NetSpeed/releases/latest/download/NetSpeed-macOS-universal.zip)** · [Release notes](https://github.com/isJDongYa/NetSpeed/releases)
 
 <img src="docs/assets/menu-bar-preview.svg" alt="Illustration of NetSpeed's two-line display adapting to different speed values" width="800">
 
@@ -43,6 +46,14 @@ The app currently uses **Simplified Chinese menus**. The speed display uses arro
 
 Local runtime validation was performed on Apple Silicon with macOS 27.0.1. CI builds and runs the included checks on both architectures; this does not replace interactive testing on every supported macOS release.
 
+## Download and install
+
+1. Download **[NetSpeed-macOS-universal.zip](https://github.com/isJDongYa/NetSpeed/releases/latest/download/NetSpeed-macOS-universal.zip)** from the [latest release](https://github.com/isJDongYa/NetSpeed/releases/latest).
+2. Unzip it and move **NetSpeed.app** to `~/Applications` or `/Applications`.
+3. Open the app. The same bundle includes **Apple Silicon and Intel** executables.
+
+Release binaries are **built and checked on GitHub Actions**, then attached automatically to the release. They are **ad-hoc signed, not notarized**. macOS may require approval in **System Settings → Privacy & Security** before the first launch. The release includes `SHA256SUMS.txt` for download integrity checks.
+
 ## Build from source
 
 ```sh
@@ -58,11 +69,13 @@ The script builds for the current Mac's architecture. To select a target explici
 zsh scripts/build.sh arm64
 # Or, for Intel:
 zsh scripts/build.sh x86_64
+# Or a single app containing both architectures:
+zsh scripts/build.sh universal
 ```
 
 The output is `delivery/NetSpeed.app`. Move it to `~/Applications` or `/Applications` before enabling launch at login, and keep it there afterwards.
 
-Builds use **local ad-hoc signing** and are **not notarized**. CI also produces architecture-specific ZIP bundles under the successful run's **Artifacts** section. These are development builds, not Developer ID signed releases.
+CI also produces ZIP bundles under the successful run's **Artifacts** section. Those are development builds; use [Releases](https://github.com/isJDongYa/NetSpeed/releases) for versioned downloads. Both use ad-hoc signing rather than a Developer ID certificate.
 
 ## Use
 
@@ -107,7 +120,13 @@ The self-checks cover 64-bit counters, elapsed time, interface switching and rec
 | `Sources/main.swift` | Application and diagnostic entry points |
 | `scripts/build.sh` | Build and locally sign the macOS app |
 | `scripts/make-icon.swift` | Generate the app icon with AppKit |
-| `.github/workflows/ci.yml` | Build, check, and package both architectures |
+| `.github/workflows/ci.yml` | Build, check, and package Apple Silicon, Intel, and universal apps |
+| `.github/workflows/release.yml` | Build tagged source on GitHub and publish release assets with checksums |
+| `VERSION` | Version shared by the app bundle and release checks |
+
+### Publishing a version
+
+Update `VERSION`, add `docs/releases/vX.Y.Z.md`, and publish a GitHub Release with the matching `vX.Y.Z` tag. The Release workflow builds Apple Silicon, Intel, and universal variants on GitHub-hosted Macs. After every build and check passes, it attaches the cloud-built universal app, a checksum file, and a link to the build run. Release binaries are not uploaded from a developer's machine.
 
 Bug reports and pull requests are welcome. Please include your macOS version, Mac architecture, build steps, and what you expected to see. See [CONTRIBUTING.md](CONTRIBUTING.md).
 

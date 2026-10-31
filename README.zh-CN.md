@@ -11,10 +11,13 @@
 [English](README.md) · **简体中文**
 
 [![CI](https://github.com/isJDongYa/NetSpeed/actions/workflows/ci.yml/badge.svg)](https://github.com/isJDongYa/NetSpeed/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/isJDongYa/NetSpeed?color=34c9a5)](https://github.com/isJDongYa/NetSpeed/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-34c9a5.svg)](LICENSE)
 [![macOS 13+](https://img.shields.io/badge/macOS-13%2B-24292f?logo=apple&logoColor=white)](#系统要求)
 [![Swift 6](https://img.shields.io/badge/Swift-6-f05138?logo=swift&logoColor=white)](#从源码构建)
 [![AppKit](https://img.shields.io/badge/UI-AppKit-549ef7)](#功能)
+
+**[下载 macOS 版](https://github.com/isJDongYa/NetSpeed/releases/latest/download/NetSpeed-macOS-universal.zip)** · [发行说明](https://github.com/isJDongYa/NetSpeed/releases)
 
 <img src="docs/assets/menu-bar-preview.svg" alt="NetSpeed 双行网速显示随文字长度自动伸缩的示意图" width="800">
 
@@ -43,6 +46,14 @@
 
 本机实际运行验证使用 Apple Silicon 和 macOS 27.0.1。CI 会在两种架构上构建并运行内置检查，但这不代表已完成所有支持系统版本的人工交互验证。
 
+## 下载与安装
+
+1. 从[最新 Release](https://github.com/isJDongYa/NetSpeed/releases/latest) 下载 **[NetSpeed-macOS-universal.zip](https://github.com/isJDongYa/NetSpeed/releases/latest/download/NetSpeed-macOS-universal.zip)**。
+2. 解压，将 **NetSpeed.app** 移到 `~/Applications` 或 `/Applications`。
+3. 打开应用。同一个包同时包含 **Apple Silicon 与 Intel** 两种架构。
+
+发行包由 **GitHub Actions 在云端构建、检查后自动附加到 Release**，使用**临时签名，未经过开发者公证**。首次运行时，macOS 可能要求在**系统设置 → 隐私与安全**中允许打开。Release 同时提供 `SHA256SUMS.txt`，可用于校验下载文件。
+
 ## 从源码构建
 
 ```sh
@@ -58,11 +69,13 @@ open delivery/NetSpeed.app
 zsh scripts/build.sh arm64
 # Intel 版本：
 zsh scripts/build.sh x86_64
+# 同时包含两种架构的通用版本：
+zsh scripts/build.sh universal
 ```
 
 应用输出到 `delivery/NetSpeed.app`。启用登录启动前，请将它移到 `~/Applications` 或 `/Applications`，之后保持该位置。
 
-构建使用**本地临时签名**，**未经过开发者公证**。CI 成功运行后，其 **Artifacts** 区域也会提供对应架构的 ZIP 包。这些是开发构建，并非 Developer ID 签名的正式发行包。
+CI 成功运行后，其 **Artifacts** 区域也会提供 ZIP 包，供开发验证使用；带版本号的下载请使用 [Releases](https://github.com/isJDongYa/NetSpeed/releases)。两者均使用临时签名，并非 Developer ID 签名。
 
 ## 使用
 
@@ -99,7 +112,13 @@ delivery/NetSpeed.app/Contents/MacOS/NetSpeed --sample 5
 | `Sources/main.swift` | 应用与诊断命令入口 |
 | `scripts/build.sh` | 构建和本地签名 |
 | `scripts/make-icon.swift` | 使用 AppKit 生成应用图标 |
-| `.github/workflows/ci.yml` | 两种架构的构建、检查和打包 |
+| `.github/workflows/ci.yml` | Apple Silicon、Intel 及通用版本的构建、检查和打包 |
+| `.github/workflows/release.yml` | 在 GitHub 构建标签源码，并自动发布应用及校验文件 |
+| `VERSION` | 应用版本与 Release 检查共用的版本号 |
+
+### 发布新版本
+
+更新 `VERSION`，添加 `docs/releases/vX.Y.Z.md`，再创建使用同名 `vX.Y.Z` 标签的 GitHub Release。Release 工作流会在 GitHub 的 Mac 上构建 Apple Silicon、Intel 和通用版本；全部构建及检查通过后，自动添加云端生成的通用应用、校验文件和构建记录链接。发行附件不从开发者本机上传。
 
 欢迎提交 Issue 或 Pull Request。报告问题时请附上 macOS 版本、Mac 架构、构建步骤、预期结果及实际现象。贡献说明见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
