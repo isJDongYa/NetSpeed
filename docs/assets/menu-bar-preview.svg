@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="326" viewBox="0 0 1000 326" role="img" aria-labelledby="title desc">
+  <title id="title">NetSpeed adaptive menu bar layout</title>
+  <desc id="desc">Three illustrated menu bar items show idle traffic, a download, and an upload. Each item's width follows its longer speed label.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1">
+      <stop stop-color="#101c2c"/>
+      <stop offset="1" stop-color="#192c3e"/>
+    </linearGradient>
+    <linearGradient id="surface" x2="0" y2="1">
+      <stop stop-color="#2c4053"/>
+      <stop offset="1" stop-color="#243649"/>
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="326" rx="24" fill="url(#bg)"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+    <text x="44" y="51" fill="#9cb4c8" font-size="13" font-weight="600" letter-spacing="2">A SMALL SPACE. A CLEAR PICTURE.</text>
+    <text x="44" y="91" fill="#f0f7fc" font-size="28" font-weight="650">Two lines. Just enough room.</text>
+    <g transform="translate(44 124)">
+      <rect width="282" height="155" rx="14" fill="url(#surface)" stroke="#3b5063"/>
+      <text x="20" y="32" fill="#a9c0d1" font-size="13">IDLE</text>
+      <rect x="20" y="52" width="90" height="48" rx="5" fill="#172737" stroke="#536c7f"/>
+      <g fill="#eef7fc" font-size="17" font-family="Menlo,'SFMono-Regular',monospace">
+        <text x="30" y="72">↓ 0 B/s</text>
+        <text x="30" y="92">↑ 0 B/s</text>
+      </g>
+      <text x="20" y="132" fill="#81a1b7" font-size="13">Compact when traffic is quiet.</text>
+    </g>
+    <g transform="translate(358 124)">
+      <rect width="282" height="155" rx="14" fill="url(#surface)" stroke="#3b5063"/>
+      <text x="20" y="32" fill="#58debf" font-size="13">DOWNLOADING</text>
+      <rect x="20" y="52" width="148" height="48" rx="5" fill="#172737" stroke="#58debf"/>
+      <g fill="#eef7fc" font-size="17" font-family="Menlo,'SFMono-Regular',monospace">
+        <text x="30" y="72">↓ 9.99 MB/s</text>
+        <text x="30" y="92">↑ 128 KB/s</text>
+      </g>
+      <text x="20" y="132" fill="#81a1b7" font-size="13">Grows with the longer value.</text>
+    </g>
+    <g transform="translate(672 124)">
+      <rect width="282" height="155" rx="14" fill="url(#surface)" stroke="#3b5063"/>
+      <text x="20" y="32" fill="#8bbdff" font-size="13">UPLOADING</text>
+      <rect x="20" y="52" width="159" height="48" rx="5" fill="#172737" stroke="#8bbdff"/>
+      <g fill="#eef7fc" font-size="17" font-family="Menlo,'SFMono-Regular',monospace">
+        <text x="30" y="72">↓ 0 bps</text>
+        <text x="30" y="92">↑ 999.9 Mbps</text>
+      </g>
+      <text x="20" y="132" fill="#81a1b7" font-size="13">Bytes or bits. Your choice.</text>
+    </g>
+  </g>
+</svg>

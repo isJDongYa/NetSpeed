@@ -1,0 +1,24 @@
+# Generated app bundles and build products
+/build/
+/delivery/
+*.app/
+.build/
+.swiftpm/
+
+# Private, machine-specific validation records
+/qa/
+
+# macOS and editor files
+.DS_Store
+._*
+*.xcuserstate
+xcuserdata/
+.idea/
+.vscode/
+
+# Local configuration and credentials
+.env
+.env.*
+*.p12
+*.p8
+*.mobileprovision

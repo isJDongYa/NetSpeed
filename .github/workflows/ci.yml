@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-check:
+    name: Build and check (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x86_64
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build app
+        run: zsh scripts/build.sh "${{ matrix.arch }}"
+
+      - name: Run core and layout checks
+        run: delivery/NetSpeed.app/Contents/MacOS/NetSpeed --self-test
+
+      - name: Check bundle signature
+        run: codesign --verify --strict delivery/NetSpeed.app
+
+      - name: Package development build
+        run: ditto -c -k --sequesterRsrc --keepParent delivery/NetSpeed.app "build/NetSpeed-${{ matrix.arch }}.zip"
+
+      - name: Upload development build
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: NetSpeed-${{ matrix.arch }}
+          path: build/NetSpeed-${{ matrix.arch }}.zip
+          if-no-files-found: error
+          retention-days: 14
