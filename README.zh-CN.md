@@ -52,7 +52,9 @@
 2. 解压，将 **NetSpeed.app** 移到 `~/Applications` 或 `/Applications`。
 3. 打开应用。同一个包同时包含 **Apple Silicon 与 Intel** 两种架构。
 
-发行包由 **GitHub Actions 在云端构建、检查后自动附加到 Release**，使用**临时签名，未经过开发者公证**。首次运行时，macOS 可能要求在**系统设置 → 隐私与安全**中允许打开。Release 同时提供 `SHA256SUMS.txt`，可用于校验下载文件。
+每个版本均由 GitHub Actions 在云端构建和检查，再自动添加应用包及 `SHA256SUMS.txt` 校验文件。
+
+如果 macOS 在首次运行时提示确认，可到**系统设置 → 隐私与安全**中允许打开 NetSpeed。
 
 ## 从源码构建
 
@@ -75,7 +77,7 @@ zsh scripts/build.sh universal
 
 应用输出到 `delivery/NetSpeed.app`。启用登录启动前，请将它移到 `~/Applications` 或 `/Applications`，之后保持该位置。
 
-CI 成功运行后，其 **Artifacts** 区域也会提供 ZIP 包，供开发验证使用；带版本号的下载请使用 [Releases](https://github.com/isJDongYa/NetSpeed/releases)。两者均使用临时签名，并非 Developer ID 签名。
+每次 CI 成功运行后，其 **Artifacts** 区域也会提供构建包。带版本号的下载请使用 [Releases](https://github.com/isJDongYa/NetSpeed/releases)。
 
 ## 使用
 
@@ -118,7 +120,7 @@ delivery/NetSpeed.app/Contents/MacOS/NetSpeed --sample 5
 
 ### 发布新版本
 
-更新 `VERSION`，添加 `docs/releases/vX.Y.Z.md`，再创建使用同名 `vX.Y.Z` 标签的 GitHub Release。Release 工作流会在 GitHub 的 Mac 上构建 Apple Silicon、Intel 和通用版本；全部构建及检查通过后，自动添加云端生成的通用应用、校验文件和构建记录链接。发行附件不从开发者本机上传。
+更新 `VERSION`，添加 `docs/releases/vX.Y.Z.md`，再创建使用同名 `vX.Y.Z` 标签的 GitHub Release。Release 工作流会在 GitHub 的 Mac 上构建 Apple Silicon、Intel 和通用版本；全部构建及检查通过后，自动添加云端生成的通用应用、校验文件和构建记录链接。
 
 欢迎提交 Issue 或 Pull Request。报告问题时请附上 macOS 版本、Mac 架构、构建步骤、预期结果及实际现象。贡献说明见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 

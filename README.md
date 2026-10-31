@@ -52,7 +52,9 @@ Local runtime validation was performed on Apple Silicon with macOS 27.0.1. CI bu
 2. Unzip it and move **NetSpeed.app** to `~/Applications` or `/Applications`.
 3. Open the app. The same bundle includes **Apple Silicon and Intel** executables.
 
-Release binaries are **built and checked on GitHub Actions**, then attached automatically to the release. They are **ad-hoc signed, not notarized**. macOS may require approval in **System Settings → Privacy & Security** before the first launch. The release includes `SHA256SUMS.txt` for download integrity checks.
+GitHub Actions builds and checks each release, then attaches the app and `SHA256SUMS.txt` automatically.
+
+If macOS asks for approval on first launch, allow NetSpeed in **System Settings → Privacy & Security**.
 
 ## Build from source
 
@@ -75,7 +77,7 @@ zsh scripts/build.sh universal
 
 The output is `delivery/NetSpeed.app`. Move it to `~/Applications` or `/Applications` before enabling launch at login, and keep it there afterwards.
 
-CI also produces ZIP bundles under the successful run's **Artifacts** section. Those are development builds; use [Releases](https://github.com/isJDongYa/NetSpeed/releases) for versioned downloads. Both use ad-hoc signing rather than a Developer ID certificate.
+CI build bundles are available under each successful run's **Artifacts** section. Use [Releases](https://github.com/isJDongYa/NetSpeed/releases) for versioned downloads.
 
 ## Use
 
@@ -126,7 +128,7 @@ The self-checks cover 64-bit counters, elapsed time, interface switching and rec
 
 ### Publishing a version
 
-Update `VERSION`, add `docs/releases/vX.Y.Z.md`, and publish a GitHub Release with the matching `vX.Y.Z` tag. The Release workflow builds Apple Silicon, Intel, and universal variants on GitHub-hosted Macs. After every build and check passes, it attaches the cloud-built universal app, a checksum file, and a link to the build run. Release binaries are not uploaded from a developer's machine.
+Update `VERSION`, add `docs/releases/vX.Y.Z.md`, and publish a GitHub Release with the matching `vX.Y.Z` tag. The Release workflow builds Apple Silicon, Intel, and universal variants on GitHub-hosted Macs. After every build and check passes, it attaches the cloud-built universal app, a checksum file, and a link to the build run.
 
 Bug reports and pull requests are welcome. Please include your macOS version, Mac architecture, build steps, and what you expected to see. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
